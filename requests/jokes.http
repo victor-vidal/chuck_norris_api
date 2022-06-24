@@ -1,0 +1,4 @@
+@HOST=http://localhost:50000
+
+### ========== GET Random Joke =================================================
+GET {{HOST}}/api/jokes/random/

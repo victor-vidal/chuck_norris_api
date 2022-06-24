@@ -1,0 +1,53 @@
+version: "3.9"
+x-chuck-norris-common:
+  &chuck-norris-common
+  deploy:
+    resources:
+      limits:
+        memory: 200m
+  restart: always
+  env_file:
+    - ../.env/dev.env
+  networks:
+    - chuck-norris
+
+services:
+  backend:
+    <<: *chuck-norris-common
+    container_name: chuck-norris-backend-dev
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.dev
+    command: >
+      bash -c "python manage.py migrate
+      && python manage.py loaddata users
+      && python manage.py runserver 0.0.0.0:50000"
+    expose:
+      - 50000
+    ports:
+      - 50000:50000
+    volumes:
+      - ../:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    <<: *chuck-norris-common
+    container_name: chuck-norris-postgres-dev
+    image: postgres:14.1-alpine
+    volumes:
+      - postgres-db:/data/postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "chuck-norris-dev"]
+      interval: 5s
+      retries: 5
+
+networks:
+  chuck-norris:
+    driver: bridge
+
+volumes:
+  postgres-db:
