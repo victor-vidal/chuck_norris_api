@@ -6,7 +6,17 @@ app_name = 'jokes'
 urlpatterns = [
     path(
         'random/',
-        views.random_joke,
+        views.RandomJokeView.as_view(),
         name='random_joke'
+    ),
+    path(
+        'category/<str:category>/',
+        views.RandomCategoryJokeView.as_view(),
+        name='category_joke'
+    ),
+    path(
+        'filter',
+        views.FilteredJokesView.as_view(),
+        name='filter_jokes'
     )
 ]
