@@ -12,11 +12,11 @@ urlpatterns = [
     path(
         'category/<str:category>/',
         views.RandomCategoryJokeView.as_view(),
-        name='category_joke'
+        name='random_category_joke'
     ),
     path(
         'filter',
         views.FilteredJokesView.as_view(),
-        name='filter_jokes'
+        name='filtered_jokes'
     )
 ]

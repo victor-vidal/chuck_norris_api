@@ -35,5 +35,8 @@ class JokeHandler():
         
         if response.ok:
             result = response.json()
+
+            if not result['result']:
+                return { 'success': False, 'status': 404 }
             return { 'success': True, 'data': result['result'][0:limit]  }
         return { 'success': False, 'status': response.status_code }
