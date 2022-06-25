@@ -6,7 +6,7 @@ To get started with this project, first you'll need to have [docker](https://doc
 ```
 docker-compose -f docker-compose/development.yaml up --build
 ```
-Now you'll have a PostgreSQL database running on your machine. Next, you'll need to create a virtual environment to install the system dependencies.
+Now you'll have a PostgreSQL database running on your machine. Next, you'll need to create a virtual environment to install the system dependencies. (You can choose the venv's interpreter on vscode and have auto complete features :) )
 
 ```
 python3 -m venv venv
@@ -15,6 +15,11 @@ pip install -r requirements/dev.txt
 ```
 
 The python version this project employ is the ```3.8```, so to avoid compatibility issues with libraries or even language features, we strongly recommend you to stick with this version.
+
+
+# API reference
+Once you deployed the system locally, you can have access to the API Documentation, you can go to ```http://<host>/api/schema/redoc/``` or ```http://<host>/api/schema/swagger-ui/```.
+
 
 # Test
 For testing the application before deploying stage, you just need to run the next command:

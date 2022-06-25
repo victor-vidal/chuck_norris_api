@@ -41,6 +41,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'django_celery_results',
     'django_celery_beat',
+    'drf_spectacular',
 ]
 
 LOCAL_APPS = [
@@ -48,6 +49,10 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS 
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,7 +69,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR.parent / 'swagger/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,6 +144,12 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Chuck Norris API',
+    'VERSION': '1.0.0',
+    'SCHEMA_PATH_PREFIX': '/api/v[0-9]',
+}
 
 # Fixture lookup folder
 # https://docs.djangoproject.com/en/1.8/howto/initial-data/#id1

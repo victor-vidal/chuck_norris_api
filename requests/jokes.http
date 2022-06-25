@@ -9,7 +9,7 @@ GET {{HOST}}/api/jokes/category/{category}/
 
 
 ### ========== GET Filter Jokes ================================================
-GET {{HOST}}/api/jokes/filter?search=TESTEtesteTESTE&limit=10
+GET {{HOST}}/api/jokes/filter?search={query}&limit={limit}
 
 
 ### ========== POST Subscription ===============================================
