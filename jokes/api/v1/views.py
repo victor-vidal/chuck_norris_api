@@ -1,9 +1,11 @@
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from jokes.services import JokeHandler
+
+from jokes.api.v1.serializers import SubscriptionSerializer
 
 
 class BaseJokeView(APIView):
@@ -59,3 +61,11 @@ class FilteredJokesView(BaseJokeView):
             
         result = self._joke_handler.search_joke(query, limit)
         return self._handle_result(result)
+    
+    
+class SubscribeView(generics.CreateAPIView):
+    """Manages Subscription objects stored in the database"""
+    
+    permission_classes = [AllowAny]
+    serializer_class = SubscriptionSerializer
+    

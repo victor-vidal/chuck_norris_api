@@ -11,13 +11,33 @@ x-chuck-norris-common:
   networks:
     - chuck-norris
 
+x-chuck-norris-backend-common:
+  &chuck-norris-backend-common
+  build:
+    context: ../
+    dockerfile: docker/Dockerfile.dev
+  deploy:
+    resources:
+      limits:
+        memory: 200m
+  volumes:
+    - ../:/app
+  depends_on:
+    &chuck-norris-common-depends-on
+    postgres:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_healthy
+  restart: always
+  env_file:
+    - ../.env/dev.env
+  networks:
+    - chuck-norris
+
 services:
   backend:
-    <<: *chuck-norris-common
+    <<: *chuck-norris-backend-common
     container_name: chuck-norris-backend-dev
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.dev
     command: >
       bash -c "python manage.py migrate
       && python manage.py loaddata users
@@ -26,11 +46,43 @@ services:
       - 50000
     ports:
       - 50000:50000
-    volumes:
-      - ../:/app
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:50000/api/healthcheck/"]
+      interval: 5s
+      retries: 5
     depends_on:
-      postgres:
-        condition: service_healthy
+      <<: *chuck-norris-common-depends-on
+
+  celery:
+    <<: *chuck-norris-backend-common
+    container_name: chuck-norris-celery-dev
+    command: celery -A config.celery_app worker -l INFO
+    depends_on:
+      <<: *chuck-norris-common-depends-on
+
+  celery-beat:
+    <<: *chuck-norris-backend-common
+    command: celery -A config.celery_app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+  rabbitmq:
+    <<: *chuck-norris-common
+    container_name: chuck-norris-rabbitmq-dev
+    image: rabbitmq:3.9.10-management-alpine
+    ports:
+      - '4369:4369'
+      - '5551:5551'
+      - '5552:5552'
+      - '5672:5672'
+      - '25672:25672'
+      - '15672:15672'
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq/mnesia
+      - rabbitmq-conf:/etc/rabbitmq/rabbitmq.conf
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 50
 
   postgres:
     <<: *chuck-norris-common
@@ -51,3 +103,5 @@ networks:
 
 volumes:
   postgres-db:
+  rabbitmq-data:
+  rabbitmq-conf:

@@ -100,3 +100,39 @@ class JokeTestCase(BasePublicTestCase):
             res.status_code,
             status.HTTP_404_NOT_FOUND
         )
+
+    def test_subscribe(self):
+        """Tests the subscribe view"""
+        
+        payload = {
+            'email': 'victorvidal584@gmail.com',
+            'category': 'animal'
+        }
+        
+        res = self.client.post(
+            reverse('jokes:subscribe'),
+            payload,
+            format='json'
+        )
+        
+        # A user should be able to register a subscription
+        self.assertEqual(
+            res.status_code,
+            status.HTTP_201_CREATED
+        )
+        
+        payload = {
+            'category': 'animal'
+        }
+        
+        res = self.client.post(
+            reverse('jokes:subscribe'),
+            payload,
+            format='json'
+        )
+        
+        # An invalid payload should be properly responded
+        self.assertEqual(
+            res.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )

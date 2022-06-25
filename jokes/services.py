@@ -1,11 +1,15 @@
 import os
 import requests
 
+from jokes.models import Subscription
+
 
 class JokeHandler():
     """Class responsible for handling joke acquisition from the Chuck Norris API"""
     
     def __init__(self) -> None:
+        """Creates a JokeHandler"""
+        
         self._url = os.environ.get('CHUCK_NORRIS_API_URL')
         
     def _handle_response(self, response: requests.Response) -> dict:
@@ -40,3 +44,24 @@ class JokeHandler():
                 return { 'success': False, 'status': 404 }
             return { 'success': True, 'data': result['result'][0:limit]  }
         return { 'success': False, 'status': response.status_code }
+    
+    
+class SubscriptionDeliveryService():
+    """Class responsible for deliverying random jokes from a category to the 
+    subscribed emails"""
+    
+    def execute(self) -> dict:
+        """Delives the jokes"""
+        
+        joke_handler = JokeHandler()
+        
+        for subscription in Subscription.objects.all():
+            result = joke_handler.get_random_category_joke(
+                subscription.category
+            )
+            
+            if result['success']:
+                joke = result['data']['value']
+                
+                print(f'Joke \"{joke}\" belongs to category \"{subscription.category}\" and was send to \"{subscription.email}\".')
+   

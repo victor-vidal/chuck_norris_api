@@ -38,7 +38,9 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'rest_framework'
+    'rest_framework',
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 LOCAL_APPS = [

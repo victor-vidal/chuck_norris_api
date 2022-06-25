@@ -1,0 +1,4 @@
+@HOST=http://localhost:50000
+
+### ========== GET health check ================================================
+GET {{HOST}}/api/healthcheck/

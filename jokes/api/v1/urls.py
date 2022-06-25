@@ -18,5 +18,10 @@ urlpatterns = [
         'filter',
         views.FilteredJokesView.as_view(),
         name='filtered_jokes'
+    ),
+    path(
+        'subscribe/',
+        views.SubscribeView.as_view(),
+        name='subscribe'
     )
 ]

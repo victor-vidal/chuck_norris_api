@@ -10,3 +10,13 @@ GET {{HOST}}/api/jokes/category/{category}/
 
 ### ========== GET Filter Jokes ================================================
 GET {{HOST}}/api/jokes/filter?search=TESTEtesteTESTE&limit=10
+
+
+### ========== POST Subscription ===============================================
+POST {{HOST}}/api/jokes/subscribe/
+Content-Type: application/json
+
+{
+    "email": "victorvidal584@gmail.com",
+    "category": "animal"
+}
